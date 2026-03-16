@@ -2,7 +2,7 @@ name: Compilador Mac OS - TrataDoc
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
   workflow_dispatch:
 
 jobs:
@@ -22,6 +22,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pymupdf pytesseract spacy customtkinter opencv-python Pillow numpy pyinstaller
+
+    - name: Baixar a IA de Texto (SpaCy) automaticamente
+      run: |
+        python -m spacy download pt_core_news_md
+        python -c "import pt_core_news_md, shutil, os; shutil.copytree(os.path.dirname(pt_core_news_md.__file__), 'pt_core_news_md')"
 
     - name: Empacotar o App com PyInstaller
       run: |
