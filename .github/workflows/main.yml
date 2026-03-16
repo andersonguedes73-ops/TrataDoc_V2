@@ -32,13 +32,25 @@ jobs:
       run: |
         pyinstaller --noconfirm --onedir --windowed --icon="icone.icns" --name "TrataDoc" --add-data "pt_core_news_md:pt_core_news_md/" --add-data "haarcascade_frontalface_default.xml:." --add-data "icone.png:." "TrataDoc.py"
 
-    - name: Zipar o App (Obrigatório para o Mac não corromper o arquivo)
+    - name: Instalar ferramenta de DMG
+      run: brew install create-dmg
+
+    - name: Criar Instalador DMG (Profissional)
       run: |
-        cd dist
-        zip -r TrataDoc_Mac.zip TrataDoc.app
+        mkdir -p dist/dmg
+        create-dmg \
+          --volname "Instalador TrataDoc" \
+          --window-pos 200 120 \
+          --window-size 600 400 \
+          --icon-size 100 \
+          --icon "TrataDoc.app" 175 190 \
+          --hide-extension "TrataDoc.app" \
+          --app-drop-link 425 190 \
+          "dist/TrataDoc_v9_Mac.dmg" \
+          "dist/TrataDoc.app"
 
     - name: Disponibilizar para Download
       uses: actions/upload-artifact@v4
       with:
-        name: TrataDoc-MacOS
-        path: dist/TrataDoc_Mac.zip
+        name: TrataDoc-MacOS-Installer
+        path: dist/TrataDoc_v9_Mac.dmg
